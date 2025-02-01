@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC Invest - Blog</title>
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-area {
+            margin-top: 10px;
+        }
+
+        .login-area input {
+            padding: 5px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 3px;
+        }
+
+        .login-area button {
+            padding: 5px 10px;
+            background-color: #3498db;
+            border: none;
+            color: #fff;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .search-bar input {
+            width: 100%;
+            max-width: 400px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #posts {
+            display: grid;
+            gap: 20px;
+        }
+
+        .post {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .post h2 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .post p {
+            color: #666;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>FC Invest - Blog</h1>
+            <nav>
+                <ul>
+                    <li><a href="#">Início</a></li>
+                    <li><a href="#">Sobre</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+            </nav>
+            <div class="login-area">
+                <input type="text" id="username" placeholder="Usuário">
+                <input type="password" id="password" placeholder="Senha">
+                <button onclick="login()">Login</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="search-bar">
+            <input type="text" id="search" placeholder="Buscar posts..." oninput="filterPosts()">
+        </div>
+
+        <section id="posts">
+            <!-- Posts serão carregados aqui -->
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2023 FC Invest - Blog. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Simulação de banco de dados usando localStorage
+        if (!localStorage.getItem('posts')) {
+            const initialPosts = [
+                { title: "Como começar a investir em 2023", content: "Descubra os primeiros passos para começar a investir no mercado financeiro." },
+                { title: "5 dicas para economizar dinheiro", content: "Aprenda a economizar e planejar suas finanças pessoais." },
+                { title: "Entendendo a bolsa de valores", content: "Tudo o que você precisa saber sobre como funciona a bolsa de valores." },
+                { title: "Fundos de investimento: vale a pena?", content: "Conheça os prós e contras dos fundos de investimento." },
+                { title: "Como montar uma carteira de investimentos", content: "Passo a passo para montar uma carteira diversificada." },
+                { title: "Renda fixa vs. renda variável", content: "Entenda as diferenças e escolha o melhor para você." },
+                { title: "Investindo em criptomoedas", content: "Guia básico para começar a investir em criptomoedas." },
+                { title: "Imposto de Renda e investimentos", content: "Saiba como declarar seus investimentos no IR." },
+                { title: "Como escolher uma corretora", content: "Dicas para escolher a melhor corretora para você." },
+                { title: "Planejamento financeiro para iniciantes", content: "Comece a planejar suas finanças de forma simples." }
+            ];
+            localStorage.setItem('posts', JSON.stringify(initialPosts));
+        }
+
+        // Função para carregar posts do localStorage
+        function loadPosts() {
+            return JSON.parse(localStorage.getItem('posts')) || [];
+        }
+
+        // Função para salvar posts no localStorage
+        function savePosts(posts) {
+            localStorage.setItem('posts', JSON.stringify(posts));
+        }
+
+        // Função para exibir os posts
+        function displayPosts(filteredPosts = loadPosts()) {
+            const postsSection = document.getElementById('posts');
+            postsSection.innerHTML = '';
+
+            filteredPosts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <h2>${post.title}</h2>
+                    <p>${post.content}</p>
+                `;
+                postsSection.appendChild(postElement);
+            });
+        }
+
+        // Função para filtrar posts conforme o usuário digita
+        function filterPosts() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const filteredPosts = loadPosts().filter(post => 
+                post.title.toLowerCase().includes(searchTerm) || 
+                post.content.toLowerCase().includes(searchTerm)
+            );
+            displayPosts(filteredPosts);
+        }
+
+        // Função de login simulada
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            alert(`Login simulado: Usuário ${username} logado com sucesso!`);
+        }
+
+        // Função para adicionar posts automaticamente (2 por dia)
+        function addAutoPosts() {
+            const newPosts = [
+                { title: "Novo post 1", content: "Conteúdo do novo post 1." },
+                { title: "Novo post 2", content: "Conteúdo do novo post 2." }
+            ];
+            const posts = loadPosts();
+            posts.push(...newPosts);
+            savePosts(posts);
+            displayPosts();
+        }
+
+        // Exibir posts iniciais
+        displayPosts();
+
+        // Simular adição automática de posts (2 por dia)
+        setInterval(addAutoPosts, 24 * 60 * 60 * 1000); // 24 horas
+    </script>
+</body>
+</html>
